@@ -1,0 +1,12 @@
+### GET  foo
+GET http://localhost:8080/foo?name=zhangsan&age=18&phone=10086
+
+### POST foo
+POST http://localhost:8080/foo
+Content-Type: application/json
+
+{
+  "name": "张三",
+  "age": 18,
+  "phone": "10010"
+}
