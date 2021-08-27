@@ -6,7 +6,7 @@ import org.beeborframework.core.util.ClassUtils;
 import org.beeborframework.core.util.ServletUtils;
 import org.beeborframework.web.exception.RepeatedHandlerMappingException;
 import org.beeborframework.web.factory.HandlerInvokerFactory;
-import org.beeborframework.web.handler.HandlerInvoker;
+import org.beeborframework.web.handler.HandleInvoker;
 import org.beeborframework.web.lang.rest.RestAction;
 
 import java.lang.reflect.Method;
@@ -25,7 +25,7 @@ import java.util.Objects;
 public class HandlerMapping {
 
     @Getter
-    private final Map<String, HandlerInvoker> mapping;
+    private final Map<String, HandleInvoker> mapping;
 
 
     private HandlerMapping() {
@@ -58,10 +58,10 @@ public class HandlerMapping {
                 // Get handler-invoker
                 HandlerInvokerFactory factory = HandlerInvokerFactory.getInstance(clazz, method, bean);
                 for (String requestPath : factory.getRequestPaths()) {
-                    for (String basePath : ann.value()) {
+                    for (String basePath : ann.path()) {
                         factory.setStanderPath(ServletUtils.processStanderPath(basePath, requestPath));
-                        HandlerInvoker target = factory.getObject();
-                        HandlerInvoker exists = result.getMapping().putIfAbsent(factory.getStanderPath(), target);
+                        HandleInvoker target = factory.getObject();
+                        HandleInvoker exists = result.getMapping().putIfAbsent(factory.getStanderPath(), target);
                         // Cannot has same request mapping and request type
                         if (Objects.nonNull(exists)) {
                             throw new RepeatedHandlerMappingException(exists, target);
@@ -81,7 +81,7 @@ public class HandlerMapping {
      * @param requestUri String
      * @return HandlerInvoker
      */
-    public HandlerInvoker getHandlerInvoker(String methodName, String requestUri) {
+    public HandleInvoker getHandlerInvoker(String methodName, String requestUri) {
         // Supported REST request
         return mapping.get(methodName + '+' + ServletUtils.processStanderPath(requestUri));
     }

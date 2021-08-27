@@ -5,7 +5,7 @@ import org.beeborframework.core.util.AnnotationUtils;
 import org.beeborframework.core.util.Assert;
 import org.beeborframework.ioc.factory.Factory;
 import org.beeborframework.web.core.RequestMethod;
-import org.beeborframework.web.handler.HandlerInvoker;
+import org.beeborframework.web.handler.HandleInvoker;
 import org.beeborframework.web.lang.rest.Delete;
 import org.beeborframework.web.lang.rest.Get;
 import org.beeborframework.web.lang.rest.Post;
@@ -23,7 +23,7 @@ import static org.beeborframework.web.core.RequestMethod.RequestType.*;
  * @version 0.0.1
  * @date 2021/5/13 15:18
  */
-public class HandlerInvokerFactory implements Factory<HandlerInvoker> {
+public class HandlerInvokerFactory implements Factory<HandleInvoker> {
 
     private final Class<?> classType;
 
@@ -49,9 +49,9 @@ public class HandlerInvokerFactory implements Factory<HandlerInvoker> {
     }
 
     @Override
-    public HandlerInvoker getObject() {
+    public HandleInvoker getObject() {
         Assert.notNull(standerPath, "'standerPath' cannot be null");
-        return new HandlerInvoker(rm.getRequestType(), standerPath, classType, method, instance);
+        return new HandleInvoker(rm.getRequestType(), standerPath, classType, method, instance);
     }
 
     public String[] getRequestPaths() {

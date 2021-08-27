@@ -1,5 +1,7 @@
 package org.beeborframework.web.interceptor;
 
+import org.beeborframework.web.handler.HttpServletResponsive;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  * @version 0.0.1
  * @date 2021/6/14 22:09
  */
-public interface Interceptor {
+public interface Interceptor extends HttpServletResponsive {
 
     /**
      * Pre-handle

@@ -6,7 +6,7 @@ import org.beeborframework.ioc.lang.Bean;
 import org.beeborframework.ioc.lang.Inject;
 
 /**
- * DemoEntity2
+ * DemoEntity3
  *
  * @author zxy
  * @version 0.0.1
@@ -15,9 +15,9 @@ import org.beeborframework.ioc.lang.Inject;
 @Bean
 @Getter
 @ToString
-public class DemoEntity2 {
+public class DemoEntity3 {
 
     @Inject
-    private DemoEntity3 demoEntity3;
+    private DemoEntity4 demoEntity4;
 
 }

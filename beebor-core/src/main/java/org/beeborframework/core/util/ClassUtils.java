@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Objects;
 
 /**
  * ClassUtils
@@ -13,6 +14,9 @@ import java.lang.reflect.Parameter;
  * @date 2021/5/12 16:29
  */
 public class ClassUtils {
+
+    private static final String VALUE_METHOD_NAME = "value";
+
 
     private ClassUtils() {
         throw new IllegalStateException("Utility class");
@@ -38,6 +42,20 @@ public class ClassUtils {
         }
 
         return result;
+    }
+
+    public static Method getMethod(Class<?> clazz, String methodName) {
+        for (Method method : getMethods(clazz)) {
+            if (Objects.equals(methodName, method.getName())) {
+                return method;
+            }
+        }
+
+        return null;
+    }
+
+    public static Method getNoArgsValueMethod(Class<?> clazz) {
+        return getMethod(clazz, VALUE_METHOD_NAME);
     }
 
     public static Field[] getFields(Class<?> clazz) {

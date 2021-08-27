@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @version 0.0.1
  * @date 2021/5/12 17:04
  */
-@RestAction("/foo")
+@RestAction(path = "/foo")
 public class FooAction {
 
     @Inject

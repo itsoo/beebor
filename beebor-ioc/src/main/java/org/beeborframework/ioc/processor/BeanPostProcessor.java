@@ -30,48 +30,55 @@ public class BeanPostProcessor implements PostProcessor {
     }
 
     @Override
-    @SneakyThrows(ReflectiveOperationException.class)
     public void postDependency(Set<BeanDefinition> beanDefinitions) {
         for (BeanDefinition beanDefinition : beanDefinitions) {
-            if (BeanDefinition.Status.FINISHED.equals(beanDefinition.getBeanStatus())) {
-                continue;
-            }
-
-            Object obj = beansCache.get(beanDefinition.getBeanName());
-            // Post dependencies of methods
-            for (Method method : ClassUtils.getMethods(beanDefinition.getBeanClass())) {
-                Inject ann = AnnotationUtils.findAnnotation(method, Inject.class);
-                if (Objects.nonNull(ann)) {
-                    List<Object> objs = new LinkedList<>();
-                    for (Parameter param : method.getParameters()) {
-                        String beanName = BeanUtils.getBeanName(ann, param);
-                        objs.add(beansCache.get(beanName));
-                    }
-
-                    method.invoke(obj, objs.toArray());
+            if (!BeanDefinition.Status.FINISHED.equals(beanDefinition.getBeanStatus())) {
+                for (BeanDefinition beanDependency : beanDefinition.getBeanDependencies()) {
+                    postDependency(beanDefinition, beanDependency);
                 }
             }
+        }
+    }
 
-            // Post dependencies of fields
-            for (Field field : ClassUtils.getFields(beanDefinition.getBeanClass())) {
-                Inject ann = AnnotationUtils.findAnnotation(field, Inject.class);
-                if (Objects.nonNull(ann)) {
-                    String beanName = BeanUtils.getBeanName(ann, field);
-                    field.set(obj, beansCache.get(beanName));
+    @SneakyThrows(ReflectiveOperationException.class)
+    private void postDependency(BeanDefinition rootBeanDefinition, BeanDefinition currBeanDefinition) {
+        if (rootBeanDefinition.equals(currBeanDefinition)) {
+            rootBeanDefinition.setBeanStatus(BeanDefinition.Status.FINISHED);
+            return;
+        }
+
+        Object obj = beansCache.get(rootBeanDefinition.getBeanName());
+        // Post dependencies of methods
+        for (Method method : ClassUtils.getMethods(rootBeanDefinition.getBeanClass())) {
+            Inject ann = AnnotationUtils.findAnnotation(method, Inject.class);
+            if (Objects.nonNull(ann)) {
+                List<Object> objs = new LinkedList<>();
+                for (Parameter param : method.getParameters()) {
+                    String beanName = BeanUtils.getBeanName(ann, param);
+                    objs.add(beansCache.get(beanName));
                 }
-            }
 
-            // Recursively handle dependent dependencies
-            for (BeanDefinition dependency : beanDefinition.getBeanDependencies()) {
-                String beanName = dependency.getBeanName();
-                Object fieldValue = ObjectUtils.getFieldValue(obj, beanName);
-                if (Objects.isNull(fieldValue)) {
-                    ObjectUtils.setFieldValue(obj, beanName, beansCache.get(beanName));
-                    postDependency(dependency.getBeanDependencies());
-                }
+                method.invoke(obj, objs.toArray());
             }
+        }
 
-            beanDefinition.setBeanStatus(BeanDefinition.Status.FINISHED);
+        // Post dependencies of fields
+        for (Field field : ClassUtils.getFields(rootBeanDefinition.getBeanClass())) {
+            Inject ann = AnnotationUtils.findAnnotation(field, Inject.class);
+            if (Objects.nonNull(ann)) {
+                String beanName = BeanUtils.getBeanName(ann, field);
+                field.set(obj, beansCache.get(beanName));
+            }
+        }
+
+        // Recursively handle dependencies
+        for (BeanDefinition beanDependency : currBeanDefinition.getBeanDependencies()) {
+            String beanName = currBeanDefinition.getBeanName();
+            Object fieldValue = ObjectUtils.getFieldValue(obj, beanName);
+            if (Objects.isNull(fieldValue)) {
+                ObjectUtils.setFieldValue(obj, beanName, beansCache.get(beanName));
+                postDependency(rootBeanDefinition, beanDependency);
+            }
         }
     }
 }

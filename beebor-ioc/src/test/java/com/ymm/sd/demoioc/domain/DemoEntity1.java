@@ -1,6 +1,5 @@
 package com.ymm.sd.demoioc.domain;
 
-import com.ymm.sd.demoioc.domain.entity.Entity1;
 import lombok.Getter;
 import lombok.ToString;
 import org.beeborframework.ioc.lang.Bean;
@@ -19,6 +18,6 @@ import org.beeborframework.ioc.lang.Inject;
 public class DemoEntity1 {
 
     @Inject
-    private Entity1 entity1;
+    private DemoEntity2 demoEntity2;
 
 }

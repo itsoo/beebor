@@ -49,7 +49,7 @@ public class DispatcherHandler extends AbstractHttpServlet {
     @Override
     @SneakyThrows(IOException.class)
     protected void doDispatch(HttpServletRequest req, HttpServletResponse resp) {
-        HandlerInvoker hi = handlerMapping.getHandlerInvoker(req.getMethod(), req.getRequestURI());
+        HandleInvoker hi = handlerMapping.getHandlerInvoker(req.getMethod(), req.getRequestURI());
         try {
             assertServletRequestHandler(req, hi);
         } catch (UnsupportedDispatcherException e) {
@@ -84,7 +84,7 @@ public class DispatcherHandler extends AbstractHttpServlet {
         }
     }
 
-    private void assertServletRequestHandler(HttpServletRequest req, HandlerInvoker hi) {
+    private void assertServletRequestHandler(HttpServletRequest req, HandleInvoker hi) {
         // 404
         if (Objects.isNull(hi)) {
             throw new UnsupportedDispatcherException(SC_NOT_FOUND, "Not found");

@@ -70,10 +70,10 @@ public class StartLauncher {
      * (private) Web application starter
      *
      * @param appClass     main-class
-     * @param interceptors Interceptor...
+     * @param interceptors Interceptor[]
      */
     @SneakyThrows(LifecycleException.class)
-    private static void start(Class<?> appClass, Interceptor... interceptors) {
+    private static void start(Class<?> appClass, Interceptor[] interceptors) {
         StartLauncher startLauncher = startLauncher(appClass);
         startLauncher.listenerRequestContext(env.getApplicationContext());
         startLauncher.registerInterceptors(interceptors);
@@ -93,7 +93,7 @@ public class StartLauncher {
     /**
      * Register interceptors
      *
-     * @param interceptors Interceptor[]
+     * @param interceptors Interceptor...
      */
     private void registerInterceptors(Interceptor... interceptors) {
         if (Objects.nonNull(interceptorRegister)) {

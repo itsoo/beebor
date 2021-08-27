@@ -1,7 +1,7 @@
 package org.beeborframework.web.exception;
 
 import org.beeborframework.core.util.StringUtils;
-import org.beeborframework.web.handler.HandlerInvoker;
+import org.beeborframework.web.handler.HandleInvoker;
 
 /**
  * RepeatedHandlerMappingException
@@ -12,7 +12,7 @@ import org.beeborframework.web.handler.HandlerInvoker;
  */
 public class RepeatedHandlerMappingException extends RuntimeException {
 
-    public RepeatedHandlerMappingException(HandlerInvoker exists, HandlerInvoker target) {
+    public RepeatedHandlerMappingException(HandleInvoker exists, HandleInvoker target) {
         super(StringUtils.getFormatString("Repeated handler mapping, please checked: [{}] {}#{} or [{}] {}#{}",
                 exists.getRequestType().name(), exists.getClassType().getCanonicalName(), exists.getHandleMethod().getName(),
                 target.getRequestType().name(), target.getClassType().getCanonicalName(), target.getHandleMethod().getName()));

@@ -1,5 +1,7 @@
 package org.beeborframework.web.lang.rest;
 
+import org.beeborframework.ioc.lang.Bean;
+
 import java.lang.annotation.*;
 
 /**
@@ -12,6 +14,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Bean
 public @interface RestAction {
 
     /**
@@ -19,13 +22,13 @@ public @interface RestAction {
      *
      * @return String
      */
-    String name() default "";
+    String value() default "";
 
     /**
      * Mapping path
      *
      * @return String of Array
      */
-    String[] value() default "";
+    String[] path() default "";
 
 }

@@ -1,5 +1,7 @@
 package org.beeborframework.web.lang.component;
 
+import org.beeborframework.ioc.lang.Bean;
+
 import java.lang.annotation.*;
 
 /**
@@ -12,6 +14,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Bean
 public @interface Dao {
 
     /**

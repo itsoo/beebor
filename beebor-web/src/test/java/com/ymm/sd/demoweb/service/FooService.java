@@ -1,8 +1,8 @@
 package com.ymm.sd.demoweb.service;
 
 import com.ymm.sd.demoweb.domain.dao.FooDao;
+import com.ymm.sd.demoweb.lang.CustomBean;
 import org.beeborframework.ioc.lang.Inject;
-import org.beeborframework.web.lang.component.Service;
 
 /**
  * FooService
@@ -11,7 +11,7 @@ import org.beeborframework.web.lang.component.Service;
  * @version 0.0.1
  * @date 2021/6/14 23:45
  */
-@Service
+@CustomBean
 public class FooService {
 
     @Inject

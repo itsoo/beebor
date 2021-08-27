@@ -30,12 +30,15 @@ import java.util.Objects;
  */
 public class DefaultExceptionHandler implements ExceptionHandler, HttpServletResponsive {
 
+    private final ResourceScanner scanner;
+
     private final List<HandlerEntry> handlerEntries;
 
 
     public DefaultExceptionHandler() {
+        this.scanner = new ResourceScanner(StartLauncher.getEnv().getAppClass());
         this.handlerEntries = new LinkedList<>();
-        this.initialization();
+        this.init();
     }
 
     @Override
@@ -49,6 +52,7 @@ public class DefaultExceptionHandler implements ExceptionHandler, HttpServletRes
                     bw.write(responseBody);
                     bw.flush();
                 }
+                return;
             }
         }
     }
@@ -56,9 +60,7 @@ public class DefaultExceptionHandler implements ExceptionHandler, HttpServletRes
     /**
      * Initial exception-handler
      */
-    private void initialization() {
-        Class<?> appClass = StartLauncher.getEnv().getAppClass();
-        ResourceScanner scanner = new ResourceScanner(appClass);
+    private void init() {
         for (Class<?> clazz : scanner.getClasses(DefaultExceptionHandler::isAdviceHandlerComponent)) {
             for (Method method : clazz.getDeclaredMethods()) {
                 HandleAdvice ann = AnnotationUtils.findAnnotation(method, HandleAdvice.class);
@@ -78,7 +80,7 @@ public class DefaultExceptionHandler implements ExceptionHandler, HttpServletRes
      * @return boolean
      */
     private static boolean isAdviceHandlerComponent(Class<?> clazz) {
-        return !clazz.isAnnotation() && !clazz.isAnonymousClass()
+        return (!clazz.isAnnotation() && !clazz.isAnonymousClass())
                 && AnnotationUtils.hasAnnotation(clazz, RestActionAdvice.class);
     }
 

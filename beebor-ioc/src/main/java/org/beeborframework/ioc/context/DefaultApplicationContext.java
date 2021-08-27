@@ -198,22 +198,45 @@ public class DefaultApplicationContext implements ApplicationContext {
      * @param currBeanDefinition BeanDefinition
      */
     private void computeCircleDependencies(BeanDefinition currBeanDefinition) {
-        if (currBeanDefinition.isCircleDependency()) {
+        Set<BeanDefinition> allDependencies = new HashSet<>();
+        for (BeanDefinition beanDependency : currBeanDefinition.getBeanDependencies()) {
+            allDependencies.add(beanDependency);
+            computeCircleDependencies(currBeanDefinition, beanDependency, allDependencies);
+        }
+
+        allDependencies.clear();
+    }
+
+    /**
+     * Bean-definition circular dependency resolution
+     *
+     * @param rootBeanDefinition BeanDefinition
+     * @param currBeanDefinition BeanDefinition
+     * @param allDependencies    Set of BeanDefinition
+     */
+    private void computeCircleDependencies(
+            BeanDefinition rootBeanDefinition, BeanDefinition currBeanDefinition, Set<BeanDefinition> allDependencies) {
+
+        if (rootBeanDefinition.isCircleDependency() && currBeanDefinition.isCircleDependency()) {
             return;
         }
 
         for (BeanDefinition beanDependency : currBeanDefinition.getBeanDependencies()) {
-            for (BeanDefinition dependency : beanDependency.getBeanDependencies()) {
-                if (Objects.equals(currBeanDefinition, dependency)) {
-                    currBeanDefinition.setCircleDependency(true);
-                    dependency.setCircleDependency(true);
-                } else if (Objects.equals(beanDependency, dependency)) {
-                    beanDependency.setCircleDependency(true);
-                    dependency.setCircleDependency(true);
-                }
+            if (Objects.equals(rootBeanDefinition, beanDependency)) {
+                rootBeanDefinition.setCircleDependency(true);
+                beanDependency.setCircleDependency(true);
             }
 
-            computeCircleDependencies(beanDependency);
+            if (Objects.equals(currBeanDefinition, beanDependency)) {
+                currBeanDefinition.setCircleDependency(true);
+                beanDependency.setCircleDependency(true);
+            }
+
+            if (!allDependencies.add(beanDependency)) {
+                beanDependency.setCircleDependency(true);
+            }
+
+            computeCircleDependencies(rootBeanDefinition, beanDependency, allDependencies);
         }
     }
 

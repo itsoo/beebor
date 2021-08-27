@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 /**
  * ResourceScanner
@@ -29,6 +30,8 @@ public class ResourceScanner {
 
     private static final String CLASS_OUTPUT_FOLDER = "classes/";
 
+    private final Set<Class<?>> allScannedClasses = new HashSet<>();
+
     private final Class<?> scannedClass;
 
 
@@ -38,14 +41,24 @@ public class ResourceScanner {
     }
 
     protected void init() {
-        // ext
+        synchronized (allScannedClasses) {
+            if (allScannedClasses.isEmpty()) {
+                allScannedClasses.addAll(getClasses());
+            }
+
+            // ext ...
+        }
     }
 
     public Set<Class<?>> getClasses() {
-        return getClasses(t -> !t.isAnnotation() && !t.isAnonymousClass());
+        return allScannedClasses.isEmpty() ? getClasses(t -> true) : allScannedClasses;
     }
 
     public Set<Class<?>> getClasses(Predicate<Class<?>> predicate) {
+        if (!allScannedClasses.isEmpty()) {
+            return allScannedClasses.stream().filter(predicate).collect(Collectors.toSet());
+        }
+
         Set<Class<?>> result = new HashSet<>();
         String packageName = getPackageName(scannedClass.getCanonicalName());
         for (String className : getClassNames(packageName)) {

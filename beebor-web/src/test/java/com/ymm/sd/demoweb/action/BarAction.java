@@ -11,7 +11,7 @@ import org.beeborframework.web.lang.rest.RestAction;
  * @version 0.0.1
  * @date 2021/5/12 17:04
  */
-@RestAction("/bar")
+@RestAction(path = "/bar")
 public class BarAction {
 
     @Get("/index")
