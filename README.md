@@ -7,7 +7,7 @@ README 目录：
 3. [beebor-orm](https://github.com/itsoo/beebor/blob/main/beebor-orm/README.md)
 4. [beebor-web](https://github.com/itsoo/beebor/blob/main/beebor-web/README.md)
 
-此项目为练手项目，将会手写以下几个模块：
+>> 此项目为练手项目，将会手写以下几个模块：
 
 1. core 模块（完成）
 2. IoC 模块（完成）
